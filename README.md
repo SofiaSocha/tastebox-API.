@@ -21,23 +21,26 @@ API REST del backend de **TasteBox**, una plataforma de recetas con suscripcione
 | Reseñas | `/reviews` | Reseñas de los usuarios; consulta por receta en `/reviews/recipe/{recipeId}` |
 | Recetas guardadas | `/saved-recipes` | Relación usuario–receta; consulta por usuario en `/saved-recipes/user/{userId}` |
 
-En total son 26 endpoints, descritos con parámetros, cuerpos y respuestas de éxito y de error en [`Node_MySQL/docs/openapi.yaml`](Node_MySQL/docs/openapi.yaml).
+En total son 26 endpoints, descritos con parámetros, cuerpos y respuestas de éxito y de error en [`Node_MySQL/openapi.yaml`](Node_MySQL/openapi.yaml).
 
 ## Estructura del repositorio
 
 ```
 tastebox-api/
 ├── README.md
+├── .gitignore
 └── Node_MySQL/
-    ├── server.js            Punto de entrada y registro de rutas
-    ├── routes/              Definición de rutas por recurso
-    ├── dao/                 Validación de datos y acceso a la base de datos
-    ├── services/            Conexión a MySQL
-    ├── utils/               Utilidades compartidas
-    ├── env/                 Configuración de la base de datos
-    ├── database/            Script SQL de la base de datos
-    ├── docs/                Especificación OpenAPI
-    └── tests/               Colección de Postman
+    ├── server.js                          Punto de entrada y registro de rutas
+    ├── package.json
+    ├── package-lock.json
+    ├── BaseDef.sql                        Script SQL de la base de datos
+    ├── openapi.yaml                       Especificación OpenAPI
+    ├── TasteBox_postman_collection.json   Colección de Postman
+    ├── routes/                            Definición de rutas por recurso
+    ├── dao/                               Validación de datos y acceso a la base de datos
+    ├── services/                          Conexión a MySQL
+    ├── utils/                             Utilidades compartidas
+    └── env/                               Configuración de la base de datos
 ```
 
 Todos los comandos de esta guía se ejecutan dentro de la carpeta `Node_MySQL`.
@@ -58,9 +61,20 @@ Todos los comandos de esta guía se ejecutan dentro de la carpeta `Node_MySQL`.
    npm install
    ```
 
-2. Crear la base de datos ejecutando el script `database/BaseDefSiiiiiiiiii.sql` en MySQL Workbench (crea el esquema `tasteBox`, sus tablas y los planes Gratuito y Premium).
+2. Crear la base de datos: abrir `Node_MySQL/BaseDef.sql` en MySQL Workbench y ejecutarlo completo. El script crea el esquema `tasteBox`, sus tablas y los planes Gratuito y Premium.
 
-3. Configurar la conexión: copiar `env/mysqlConfig.example.js` como `env/mysqlConfig.js` y escribir el usuario y la contraseña de MySQL local. Este archivo no se sube al repositorio.
+3. Configurar la conexión: crear el archivo `env/mysqlConfig.js` con el siguiente contenido, usando el usuario y la contraseña de MySQL local:
+
+   ```js
+   const config = {
+       host: 'localhost',
+       user: 'root',
+       password: ' ',
+       database: 'tasteBox'
+   };
+
+   module.exports = config;
+   ```
 
 4. Iniciar la API:
 
@@ -72,11 +86,11 @@ Todos los comandos de esta guía se ejecutan dentro de la carpeta `Node_MySQL`.
 
 ## Documentación
 
-La especificación completa está en `Node_MySQL/docs/openapi.yaml`. Para verla de forma interactiva, abrir <https://editor.swagger.io> y pegar el contenido del archivo.
+La especificación completa está en `Node_MySQL/openapi.yaml`. Para verla de forma interactiva, abrir <https://editor.swagger.io> y pegar el contenido del archivo.
 
 ## Pruebas
 
-La carpeta `Node_MySQL/tests/` contiene la colección de Postman (`TasteBox_postman_collection.json`) con 53 peticiones y 83 verificaciones; cada endpoint tiene al menos un caso de éxito y uno de error, salvo la creación y eliminación de planes, que solo cuentan con caso de error.
+El archivo `Node_MySQL/TasteBox_postman_collection.json` es la colección de Postman, con 53 peticiones y 83 verificaciones; cada endpoint tiene al menos un caso de éxito y uno de error, salvo la creación y eliminación de planes, que solo cuentan con caso de error.
 
 1. Importar la colección en Postman.
 2. Con la base de datos recién creada y la API en ejecución, abrir la colección y usar **Run** para ejecutarla en orden.
